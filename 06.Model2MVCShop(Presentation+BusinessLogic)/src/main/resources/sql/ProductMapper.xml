@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 					
+<!-- UserMapper 참조할 것 -->
+
+<!-- TTL : 7EA -->
+<mapper namespace="ProductMapper">
+
+	<resultMap id="productSelectMap" type="product" >
+		<result property="prodNo" 		column="prod_no" 				jdbcType="INTEGER"/>
+		<result property="prodName" 	column="prod_name" 			jdbcType="VARCHAR"/>
+		<result property="prodDetail" 	column="prod_detail" 			jdbcType="VARCHAR"/>
+		<result property="manuDate" 	column="manufacture_day" 	jdbcType="VARCHAR"/>
+		<result property="price" 			column="price" 						jdbcType="INTEGER"/>
+		<result property="fileName" 		column="image_file" 				jdbcType="VARCHAR"/>
+		<result property="regDate" 		column="reg_date" 				jdbcType="DATE"/>
+	</resultMap>	
+	
+	
+	<insert id="addProduct" parameterType="product">
+		INSERT
+		INTO product(prod_no, prod_name, prod_detail, manufacture_day, price, image_file, reg_date)
+		VALUES(seq_product_prod_no.nextval, #{prodName:VARCHAR}, #{prodDetail:VARCHAR}, 
+					#{manuDate:DATE}, #{price:INTEGER}, #{fileName:VARCHAR}, SYSDATE	)
+	</insert>
+	
+	
+	<select id="getProduct" parameterType="int" resultMap="productSelectMap">
+		SELECT
+		prod_no, prod_name, prod_detail, manufacture_day, price, image_file, reg_date
+		FROM product
+		WHERE prod_no = #{prodNo}
+	</select>
+	
+	
+	<update id="updateProduct" parameterType="product">
+		UPDATE product SET 
+			prod_name			= #{prodName:VARCHAR},
+			prod_detail 			= #{prodDetail:VARCHAR},
+			manufacture_day	= #{manuDate:VARCHAR}, 
+			price						= #{price:NUMERIC}, 
+			image_file 			= #{fileName:VARCHAR} 			
+		WHERE prod_no 		= #{prodNo}
+	</update> <!-- user의 경우는 아이디로 들어가서 수정 prodNo(prod_no) 수정가능한가?? -->
+	
+	
+	<delete id="removeProduct" parameterType="int">
+		DELETE 
+		FROM product
+		WHERE prod_no = #{prodNo}
+	</delete>
+	
+	
+	<select  id="getProductList"  parameterType="search"	resultMap="productSelectMap">
+	  	SELECT *
+	  	FROM (	SELECT inner_table.* , ROWNUM AS row_seq
+	  					FROM		(	SELECT prod_no , prod_name, prod_detail, manufacture_day, price, image_file, reg_date
+											FROM product
+											<if test="searchCondition != null">
+												<where>
+													<if test="searchCondition == 0 and searchKeyword !='' ">
+										 				prod_no like '%${searchKeyword}%' 
+													</if>
+													<if test="searchCondition == 1 and searchKeyword !='' ">
+										 				prod_name like '%${searchKeyword}%' 
+													</if>
+												</where>
+											</if>
+											ORDER BY prod_no ) inner_table
+						WHERE ROWNUM &lt;= #{endRowNum} )
+		WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum} 
+	 </select>
+	 
+	 
+	 <!-- SQL : SELECT ROW Count -->	 
+	 <select  id="getTotalCount"  parameterType="search"	 resultType="int">
+	  	SELECT COUNT(*)
+	  	FROM(	SELECT prod_no , prod_name, prod_detail, manufacture_day, price, image_file, reg_date
+						FROM product
+						<if test="searchCondition != null">
+							<where>
+								<if test="searchCondition == 0 and searchKeyword !='' ">
+						 			prod_no like '%${searchKeyword}%' 
+								</if>
+								<if test="searchCondition == 1 and searchKeyword !='' ">
+						 			prod_name like '%${searchKeyword}%' 
+								</if>
+							</where>
+						</if> ) countTable	
+	 </select>
+	
+</mapper>

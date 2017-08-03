@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+				xmlns="http://java.sun.com/xml/ns/javaee" 
+				xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+												http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+				metadata-complete="true" version="3.0">
+				
+	<!--  -->
+	
+
+  <!-- listener: 서블릿2.3 버전으로부터 세션이나 서블릿 컨텍스트가 생성 또는 수정되거나 소멸되는 것을 알려주는 이벤트 리스터 -->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener	</listener-class>
+  </listener>
+  <!-- 계층별로 나눈  xml 설정파일이 존재할 떄, web.xml에서 모두 load 되도록 등록할 때 사용한다.
+  		contextConfigLocation 이라는 parameter를 사용하면,  contextLoader가 load할 수 있는 parameter를 한개 이상 받을 수 있다. -->
+  
+  <!-- context-param: 어플리케이션의 초기화 파라미터를 선언하는데 사용한다. -->
+  <!-- <param-value>/WEB-INF/config/*-servlet.xml</param-value> 
+  		윗 줄의 의미는 /WEB-INF/config/폴더 안에 있는 -servlet.xml로 끝나는 모든 파일을 읽어오는 것을 의미한다. -->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+			classpath:config/context-aspect.xml,
+			classpath:config/context-common.xml,
+			classpath:config/context-mybatis.xml,
+			classpath:config/context-transaction.xml
+		</param-value>
+  </context-param>
+  <!-- param-value 의 csv는 공백, 쉼표, 세미콜론 가능 -->
+  
+  <!-- filter: Servlet이나 jsp페이지로 들어오는 요청정보를 사전에 걸러내는 기능 -->
+  <filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>euc_kr</param-value>
+    </init-param>
+  </filter>
+  
+  <!-- filter-mapping: 필터를 지정했다면, filter-mapping을 지정하여 하나 이상의 서블릿과 연결한다. -->
+  <filter-mapping>
+    <filter-name>encodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <!-- :: SpringMVC 에서의 Front Controller 단일인입점 DispatcherServlet 선언 -->
+  <!-- servlet: 서블릿이나 jsp페이지에 초기화 파라미터나 사용자 url들을 할당 할 때 사용되는 서블릿이나 jsp이름을 지정 -->
+  <servlet>
+    <servlet-name>action</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>/config/springMVC/common-servlet.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <!-- 확장자가 ~.do 인 경우, Servlet Mapping :: -->
+  <!-- servlet-mapping: 상대 url 경로를 좀 더 쉽게 다루기 위해 기본 url을 변경할 때 사용 -->
+  <servlet-mapping>
+    <servlet-name>action</servlet-name>
+    <url-pattern>*.do</url-pattern>
+  </servlet-mapping>
+  
+  <!-- url이 파일명이 아닌 디렉토리 명으로 받았을 경우, 기본적으로 불러올 파일명을 지정하는데 사용한다. -->
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+  </welcome-file-list>
+</web-app>
