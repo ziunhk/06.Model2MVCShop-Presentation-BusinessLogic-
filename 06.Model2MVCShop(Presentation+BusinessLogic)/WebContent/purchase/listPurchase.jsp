@@ -78,9 +78,9 @@
 							<a	href="/getUser.do?userId=${purchase.buyer.userId}">${purchase.buyer.userId}</a>
 						</td>
 						<td></td>
-						<td align="left">${purchase.buyer.userName}</td>
+						<td align="left">${purchase.receiverName}</td>
 						<td></td>
-						<td align="left">${purchase.buyer.phone}</td>
+						<td align="left">${purchase.receiverPhone}</td>
 						<td></td>
 						<c:if test="${purchase.tranCode == '1  '}">
 						<td align="left">구매완료되었습니다.(입력되었으면 이게 default)</td>

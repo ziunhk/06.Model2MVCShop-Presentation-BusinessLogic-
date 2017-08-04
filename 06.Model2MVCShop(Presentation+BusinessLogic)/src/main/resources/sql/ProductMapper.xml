@@ -10,13 +10,14 @@
 <mapper namespace="ProductMapper">
 
 	<resultMap id="productSelectMap" type="product" >
-		<result property="prodNo" 		column="prod_no" 				jdbcType="INTEGER"/>
-		<result property="prodName" 	column="prod_name" 			jdbcType="VARCHAR"/>
-		<result property="prodDetail" 	column="prod_detail" 			jdbcType="VARCHAR"/>
-		<result property="manuDate" 	column="manufacture_day" 	jdbcType="VARCHAR"/>
-		<result property="price" 			column="price" 						jdbcType="INTEGER"/>
-		<result property="fileName" 		column="image_file" 				jdbcType="VARCHAR"/>
-		<result property="regDate" 		column="reg_date" 				jdbcType="DATE"/>
+		<result property="prodNo" 			column="prod_no" 				jdbcType="INTEGER"/>
+		<result property="prodName" 		column="prod_name" 			jdbcType="VARCHAR"/>
+		<result property="prodDetail" 		column="prod_detail" 			jdbcType="VARCHAR"/>
+		<result property="manuDate" 		column="manufacture_day" 	jdbcType="VARCHAR"/>
+		<result property="price" 				column="price" 						jdbcType="INTEGER"/>
+		<result property="fileName" 			column="image_file" 				jdbcType="VARCHAR"/>
+		<result property="regDate" 			column="reg_date" 				jdbcType="DATE"/>
+		<result property="proTranCode" 	column="tran_status_code" 	jdbcType="CHAR"/>
 	</resultMap>	
 	
 	
@@ -30,10 +31,27 @@
 	
 	<select id="getProduct" parameterType="int" resultMap="productSelectMap">
 		SELECT
-		prod_no, prod_name, prod_detail, manufacture_day, price, image_file, reg_date
-		FROM product
-		WHERE prod_no = #{prodNo}
+		p.prod_no as prod_no, 
+		p.prod_name as prod_name, 
+		p.prod_detail as prod_detail, 
+		p.manufacture_day as manufacture_day, 
+		p.price as price, 
+		p.image_file as image_file, 
+		p.reg_date as reg_date, 
+		t.tran_status_code as tran_status_code 
+		FROM product p, transaction t 
+		WHERE p.prod_no=t.prod_no (+)
+		AND p.prod_no=#{prodNo}
 	</select>
+	
+	<!-- 원본
+	<select id="getProduct" parameterType="int" resultMap="productSelectMap">
+		SELECT
+		prod_no, prod_name, prod_detail, manufacture_day, price, image_file, reg_date 
+		FROM product 
+		WHERE prod_no=#{prodNo}
+	</select>
+	 -->
 	
 	
 	<update id="updateProduct" parameterType="product">
@@ -57,19 +75,28 @@
 	<select  id="getProductList"  parameterType="search"	resultMap="productSelectMap">
 	  	SELECT *
 	  	FROM (	SELECT inner_table.* , ROWNUM AS row_seq
-	  					FROM		(	SELECT prod_no , prod_name, prod_detail, manufacture_day, price, image_file, reg_date
-											FROM product
+	  					FROM		(	SELECT 
+	  											p.prod_no as prod_no, 
+	  											p.prod_name as prod_name, 
+	  											p.prod_detail as prod_detail, 
+	  											p.manufacture_day as manufacture_day, 
+	  											p.price as price, 
+	  											p.image_file as image_file, 
+	  											p.reg_date as reg_date, 
+	  											t.tran_status_code as tran_status_code 
+											FROM product p,  transaction t 
+											WHERE p.prod_no=t.prod_no(+) 
 											<if test="searchCondition != null">
-												<where>
-													<if test="searchCondition == 0 and searchKeyword !='' ">
-										 				prod_no like '%${searchKeyword}%' 
-													</if>
-													<if test="searchCondition == 1 and searchKeyword !='' ">
-										 				prod_name like '%${searchKeyword}%' 
-													</if>
-												</where>
+												<choose>
+													<when test="searchCondition == 0 and searchKeyword !='' ">
+										 				AND p.prod_no like '%${searchKeyword}%' 
+													</when>
+													<when test="searchCondition == 1 and searchKeyword !='' ">
+										 				AND p.prod_name like '%${searchKeyword}%' 
+													</when>
+												</choose>
 											</if>
-											ORDER BY prod_no ) inner_table
+											ORDER BY p.prod_no ) inner_table
 						WHERE ROWNUM &lt;= #{endRowNum} )
 		WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum} 
 	 </select>
@@ -78,17 +105,26 @@
 	 <!-- SQL : SELECT ROW Count -->	 
 	 <select  id="getTotalCount"  parameterType="search"	 resultType="int">
 	  	SELECT COUNT(*)
-	  	FROM(	SELECT prod_no , prod_name, prod_detail, manufacture_day, price, image_file, reg_date
-						FROM product
+	  	FROM(	SELECT 
+	  					p.prod_no as prod_no, 
+	  					p.prod_name as prod_name, 
+	  					p.prod_detail as prod_detail, 
+	  					p.manufacture_day as manufacture_day, 
+	  					p.price as price, 
+	  					p.image_file as image_file, 
+	  					p.reg_date as reg_date, 
+	  					t.tran_status_code as tran_status_code 
+					FROM product p, transaction t 
+					WHERE p.prod_no=t.prod_no(+) 
 						<if test="searchCondition != null">
-							<where>
-								<if test="searchCondition == 0 and searchKeyword !='' ">
-						 			prod_no like '%${searchKeyword}%' 
-								</if>
-								<if test="searchCondition == 1 and searchKeyword !='' ">
-						 			prod_name like '%${searchKeyword}%' 
-								</if>
-							</where>
+							<choose>
+								<when test="searchCondition == 0 and searchKeyword !='' ">
+						 			p.prod_no like '%${searchKeyword}%' 
+								</when>
+								<when test="searchCondition == 1 and searchKeyword !='' ">
+						 			p.prod_name like '%${searchKeyword}%' 
+								</when>
+							</choose>
 						</if> ) countTable	
 	 </select>
 	

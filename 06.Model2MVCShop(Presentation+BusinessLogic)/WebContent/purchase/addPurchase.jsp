@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR" pageEncoding="EUC-KR"%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
 <html>
@@ -28,11 +28,16 @@
 	</tr>
 	<tr>
 		<td>구매방법</td>
-		<td>
-		
-			현금구매
-		
-		</td>
+			<c:if test="${purchase.tranCode == '1' }">
+				<td>
+					현금구매
+				</td>
+			</c:if>
+			<c:if test="${purchase.tranCode == '2' }">
+				<td>
+					신용구매
+				</td>
+			</c:if>
 		<td></td>
 	</tr>
 	<tr>

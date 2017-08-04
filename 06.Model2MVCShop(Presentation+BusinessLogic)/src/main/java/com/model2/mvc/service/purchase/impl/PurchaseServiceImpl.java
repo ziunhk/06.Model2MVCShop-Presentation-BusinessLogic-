@@ -38,6 +38,10 @@ public class PurchaseServiceImpl implements PurchaseService {
 		return purchaseDao.getPurchase(tranNo);
 	}
 
+	public Purchase getPurchase2(int prodNo) throws Exception {
+		return purchaseDao.getPurchase2(prodNo);
+	}
+
 	public void updatePurchase(Purchase purchase) throws Exception {
 		purchaseDao.updatePurchase(purchase);
 	}
@@ -57,11 +61,8 @@ public class PurchaseServiceImpl implements PurchaseService {
 		
 		return map;
 	}
-
-	public Purchase getPurchase2(int prodNo) throws Exception { // 필요 없을 듯
-		return null;
-	}
-
+	
+	//....필요한가요?
 	public Map<String, Object> getSaleList(Search search) throws Exception {
 		// TODO Auto-generated method stub
 		return null;

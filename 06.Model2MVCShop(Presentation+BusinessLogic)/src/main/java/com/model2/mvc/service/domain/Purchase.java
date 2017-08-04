@@ -97,6 +97,6 @@ public class Purchase {
 				+ "\n, orderDate=" + orderDate + ", paymentOption=" + paymentOption 
 				+ "\n, purchaseProd=" + purchaseProd + ", receiverName=" + receiverName 
 				+ "\n, receiverPhone=" + receiverPhone + ", tranCode=" + tranCode 
-				+ "\n, tranNo=" + tranNo + "]";
+				+ "\n, tranNo=" + tranNo + "]"+"///\n";
 	}
 }

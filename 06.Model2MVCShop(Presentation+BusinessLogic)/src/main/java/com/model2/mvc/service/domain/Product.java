@@ -81,6 +81,6 @@ public class Product {
 		return "\nProductVO : \n[fileName]" + fileName + "[manuDate]" + manuDate 
 				+ "\n[price]" + price + "[prodDetail]" + prodDetail
 				+ "\n[prodName]" + prodName + "[prodNo]" + prodNo
-				+ "\n[regData]" + regDate + "[proTranCode]" + proTranCode;
+				+ "\n[regData]" + regDate + "[proTranCode]" + proTranCode+"///\n";
 	}	
 }

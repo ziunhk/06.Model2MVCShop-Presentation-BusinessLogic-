@@ -86,17 +86,27 @@ public class PurchaseController {
 	
 	@RequestMapping("/addPurchase.do")
 	public String addPurchase( @ModelAttribute("purchase") Purchase purchase, 
-											@ModelAttribute("product") Product product, 
-											@ModelAttribute("user") User user, 
-											Model model ) throws Exception {
+											@RequestParam("prodNo") int prodNo, 
+											@RequestParam("buyerId") String buyerId, 
+											Model model) throws Exception {
 
 		System.out.println("/addPurchase.do");
+		
 		//Business Logic
-		//purchase.setManuDate(purchase.getManuDate().replace("-", "")); //because of DB type or size...
-		purchaseService.addPurchase(purchase);
+		Product purchaseProd = productService.getProduct(prodNo);
+		User buyer = userService.getUser(buyerId);
+		purchase.setBuyer(buyer);
+		purchase.setPurchaseProd(purchaseProd);
+		purchase.setTranCode("1");
+		
 		model.addAttribute("purchase", purchase);
-		model.addAttribute("user", user);
-		model.addAttribute("product", product);
+
+//		model.addAttribute("buyer", buyer);
+//		model.addAttribute("product", purchaseProd);
+
+		purchaseService.addPurchase(purchase);
+		
+		System.out.println("\n\n23478568 purchase :: "+purchase);
 		
 		return "forward:/purchase/addPurchase.jsp";
 	}
@@ -144,6 +154,17 @@ public class PurchaseController {
 		return modelAndView;
 	}
 	*/
+	@RequestMapping("/getPurchase2.do") //data type check
+	public String getPurchase2( @RequestParam("prodNo") int prodNo , Model model ) throws Exception {
+		
+		System.out.println("/getPurchase2.do");
+		//Business Logic
+		Purchase purchase = purchaseService.getPurchase2(prodNo);
+		// Model °ú View ¿¬°á
+		model.addAttribute("purchase", purchase);
+		
+		return "forward:/purchase/getPurchase.jsp";
+	}
 	
 	
 	

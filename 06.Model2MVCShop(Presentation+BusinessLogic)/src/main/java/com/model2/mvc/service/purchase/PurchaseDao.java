@@ -13,9 +13,12 @@ public interface PurchaseDao {
 	// item 구매 추가
 	public void addPurchase(Purchase purchase) throws Exception; 
 	
-	// 구매한 item 찾기
+	// 구매한 item 찾기 by tranNo
 	public Purchase getPurchase(int tranNo) throws Exception;
-
+	
+	// 구매한 item 찾기 by prodNo
+	public Purchase getPurchase2(int prodNo) throws Exception;
+	
 	// 구매한 item 관련 정보 수정
 	public void updatePurchase(Purchase purchase) throws Exception;
 	

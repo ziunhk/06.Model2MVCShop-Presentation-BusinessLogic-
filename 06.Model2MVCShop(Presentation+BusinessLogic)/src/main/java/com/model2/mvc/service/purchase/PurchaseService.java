@@ -17,14 +17,14 @@ public interface PurchaseService {
 	// 구매한 item tranNo로 찾기
 	public Purchase getPurchase(int tranNo) throws Exception;
 	
+	// 구매한 item prodNo로 찾기
+	public Purchase getPurchase2(int prodNo) throws Exception;
+
 	// 구매한 item 관련 정보 수정
 	public void updatePurchase(Purchase purchase) throws Exception;
 	
 	// 구매한 item의 구매완료 -> 배송중 -> 배송완료 수정
 	public void updateTranCode(Purchase purchase) throws Exception;
-	
-	// 구매한 item prodNo로 찾기
-	public Purchase getPurchase2(int prodNo) throws Exception;
 	
 	// 구매 item 목록
 	public Map<String,Object> getPurchaseList(Search search) throws Exception;

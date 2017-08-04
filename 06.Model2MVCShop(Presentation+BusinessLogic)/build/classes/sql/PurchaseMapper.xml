@@ -68,7 +68,6 @@
 		
 	
 	<select id="getPurchase" parameterType="int" resultMap="purchaseSelectMap">
-		
 		SELECT
 			tran_no, 
 			buyer_id, 
@@ -83,7 +82,24 @@
 			dlvy_date 
 		FROM transaction 
 			WHERE tran_no = #{tranNo}
+	</select>
 	
+	
+	<select id="getPurchase2" parameterType="int" resultMap="purchaseSelectMap">
+		SELECT
+			tran_no, 
+			buyer_id, 
+			prod_no, 
+			payment_option, 
+			receiver_name, 
+			receiver_phone, 
+			demailaddr, 
+			dlvy_request, 
+			tran_status_code, 
+			order_data, 
+			dlvy_date 
+		FROM transaction 
+			WHERE prod_no = #{prodNo}
 	</select>
 	
 	
@@ -118,7 +134,7 @@
 	<select  id="getPurchaseList"  parameterType="search"	resultMap="purchaseSelectMap">
 	  	SELECT *
 	  	FROM (	SELECT inner_table.* , ROWNUM AS row_seq
-	  					FROM		(	SELECT tran_no , prod_no
+	  					FROM		(	SELECT tran_no, prod_no, buyer_id, payment_option, receiver_name, receiver_phone, demailaddr, dlvy_request, tran_status_code, order_data, dlvy_date 
 											FROM transaction
 											<if test="searchCondition != null">
 												<where>
@@ -139,7 +155,7 @@
 	 <!-- SQL : SELECT ROW Count -->	 
 	 <select  id="getTotalCount"  parameterType="search"	 resultType="int">
 	  	SELECT COUNT(*)
-	  	FROM(	SELECT tran_no , prod_no
+	  	FROM(	SELECT tran_no , prod_no, buyer_id, payment_option, receiver_name, receiver_phone, demailaddr, dlvy_request, tran_status_code, order_data, dlvy_date
 						FROM transaction
 						<if test="searchCondition != null">
 							<where>
